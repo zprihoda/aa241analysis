@@ -173,7 +173,7 @@ def plotMotorRpm(dset_dict):
     axes.set_xlabel('t (s)')
     axes.set_ylabel('rpm')
 
-    axes.set_title('Morot RPM')
+    axes.set_title('Motor RPM')
 
 
 def main():
