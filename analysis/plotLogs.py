@@ -9,6 +9,17 @@ Plot data from ulg log file
 
 Example Usage:
 python plotLogs.py ../logs/log_59_2019-4-13-10-49-40.ulg
+
+TODO: Implement plotAttitude (need to convert quaternions to euler angles)
+TODO: Check units of data in plotMotorRpm
+TODO: Add argumentparser
+    arguments:
+        filename: positional argument to replace using sys.argv
+        --full : plot all possible data (action='store_true', default=false).  when false,
+                 only generate some subset (TBD) of plots
+        --save : Save plots to specified location (default=false)
+
+TODO: Add other plots that we decide may be useful
 """
 
 
@@ -82,6 +93,8 @@ def plotTrajectory(dset_dict):
 
 
 def plotAttitude(dset_dict):
+    # TODO: convert quaternion to euler angles
+    #   See example code at https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 
     attitude_dset = dset_dict['vehicle_attitude']
     setpoint_dset = dset_dict['vehicle_attitude_setpoint']
@@ -176,15 +189,14 @@ def plotMotorRpm(dset_dict):
     axes.set_title('Motor RPM')
 
 
-def main():
-
-    # Load File
-    filename = sys.argv[1]
+def loadDataset(filename):
     ulog = pyulog.ULog(filename)
 
     # combine datasets into dictionary
     dataset_dict = {}
     for d in ulog.data_list:
+        # debug prints (useful for determining what data we have to plot)
+        # will be removed as the tool is finalized
         print d.name
         print d.data.keys()
         print
@@ -193,6 +205,16 @@ def main():
             continue
         dataset_dict[d.name] = d.data
 
+    return dataset_dict
+
+
+def main():
+
+    # Load File
+    filename = sys.argv[1]
+    dataset_dict = loadDataset(filename)
+
+    # Plot Stuff
     plotPosition(dataset_dict)
     plotVelocity(dataset_dict)
     plotTrajectory(dataset_dict)
@@ -201,7 +223,6 @@ def main():
     plotMotorRpm(dataset_dict)
 
     #plotAttitude(dataset_dict)
-
 
     plt.show()
 
