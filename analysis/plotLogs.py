@@ -101,8 +101,8 @@ def plotAcceleration(dset_dict):
     axes[2].set_ylabel('ax (m/s^2)')
 
     axes[0].set_title('Acceleration')
-    
-    
+
+
 def plotTrajectory(dset_dict):
 
     local_dset = dset_dict['vehicle_local_position']
@@ -136,11 +136,11 @@ def plotAttitude(dset_dict):
     roll = np.arctan2(2.0 * (q_0 * q_1 + q_2 * q_3), 1.0 - 2.0 * (q_1 * q_1 + q_2 * q_2))
     pitch = np.arcsin(2.0 *(q_0 * q_2 - q_3 * q_1))
     yaw = np.arctan2(2.0 * (q_0 * q_3 + q_1 * q_2), 1.0 - 2.0 * (q_2 * q_2 + q_3 * q_3))
-    
-    q_0 = setpoint_dset['q[0]']
-    q_1 = setpoint_dset['q[1]']
-    q_2 = setpoint_dset['q[2]']
-    q_3 = setpoint_dset['q[3]']
+
+    q_0 = setpoint_dset['q_d[0]']
+    q_1 = setpoint_dset['q_d[1]']
+    q_2 = setpoint_dset['q_d[2]']
+    q_3 = setpoint_dset['q_d[3]']
     roll_set = np.arctan2(2.0 * (q_0 * q_1 + q_2 * q_3), 1.0 - 2.0 * (q_1 * q_1 + q_2 * q_2))
     pitch_set = np.arcsin(2.0 * (q_0 * q_2 - q_3 * q_1))
     yaw_set = np.arctan2(2.0 * (q_0 * q_3 + q_1 * q_2), 1.0 - 2.0 * (q_2 * q_2 + q_3 * q_3))
@@ -150,12 +150,12 @@ def plotAttitude(dset_dict):
     axes[0].grid()
     axes[0].legend(['Estimated', 'Setpoint'])
     axes[0].set_ylabel('roll (rad)')
-    
+
     axes[1].plot((attitude_dset['timestamp']-t0)/1e6,pitch)
     axes[1].plot((setpoint_dset['timestamp']-t0)/1e6,pitch_set)
     axes[1].grid()
     axes[1].set_ylabel('pitch (rad)')
-    
+
     axes[2].plot((attitude_dset['timestamp']-t0)/1e6,yaw)
     axes[2].plot((setpoint_dset['timestamp']-t0)/1e6,yaw_set)
     axes[2].grid()
@@ -218,7 +218,7 @@ def plotBatteryStatus(dset_dict):
 
 def plotActuator(dset_dict):
     # plot actuator control
-    
+
     actuator_set = dset_dict['actuator_controls_0']
 
     t0 = actuator_set['timestamp'][0]
@@ -234,8 +234,8 @@ def plotActuator(dset_dict):
     axes.set_xlabel('t (s)')
 
     axes.set_title('Actuator Status')
-    
-    
+
+
 # def plotMotorRpm(dset_dict):
 #     # plot motor rpm
 #     # TODO: not sure if actuator outputs correspond directly to rpm
