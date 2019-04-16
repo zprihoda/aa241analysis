@@ -290,12 +290,11 @@ def main():
     plotVelocity(dataset_dict)
     plotAcceleration(dataset_dict)
     plotTrajectory(dataset_dict)
+    plotAttitude(dataset_dict)
     plotAttitudeRates(dataset_dict)
     plotBatteryStatus(dataset_dict)
     plotActuator(dataset_dict)
 #     plotMotorRpm(dataset_dict)
-
-    #plotAttitude(dataset_dict)
 
     plt.show()
 
