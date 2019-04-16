@@ -10,7 +10,7 @@ Plot data from ulg log file
 Example Usage:
 python plotLogs.py ../logs/log_59_2019-4-13-10-49-40.ulg
 
-TODO: Implement plotAttitude (need to convert quaternions to euler angles)
+TODO: Implement plotAttitude (need to convert quaternions to euler angles) - done
 TODO: Check units of data in plotMotorRpm
 TODO: Add argumentparser
     arguments:
@@ -31,19 +31,19 @@ def plotPosition(dset_dict):
 
     fig,axes = plt.subplots(3,1,sharex=True)
 
-    axes[0].plot((local_dset['timestamp']-t0)/1e6,local_dset['x'])
-    axes[0].step((setpoint_dset['timestamp']-t0)/1e6,setpoint_dset['x'], where='post')
+    axes[0].plot((local_dset['timestamp'])/1e6,local_dset['x'])
+    axes[0].step((setpoint_dset['timestamp'])/1e6,setpoint_dset['x'], where='post')
     axes[0].grid()
     axes[0].legend(['Estimated', 'Setpoint'])
     axes[0].set_ylabel('x (m)')
 
-    axes[1].plot((local_dset['timestamp']-t0)/1e6,local_dset['y'])
-    axes[1].step((setpoint_dset['timestamp']-t0)/1e6,setpoint_dset['y'], where='post')
+    axes[1].plot((local_dset['timestamp'])/1e6,local_dset['y'])
+    axes[1].step((setpoint_dset['timestamp'])/1e6,setpoint_dset['y'], where='post')
     axes[1].grid()
     axes[1].set_ylabel('y (m)')
 
-    axes[2].plot((local_dset['timestamp']-t0)/1e6,local_dset['z'])
-    axes[2].step((setpoint_dset['timestamp']-t0)/1e6,setpoint_dset['z'], where='post')
+    axes[2].plot((local_dset['timestamp'])/1e6,local_dset['z'])
+    axes[2].step((setpoint_dset['timestamp'])/1e6,setpoint_dset['z'], where='post')
     axes[2].grid()
     axes[2].set_xlabel('t (s)')
     axes[2].set_ylabel('z (m)')
@@ -59,19 +59,19 @@ def plotVelocity(dset_dict):
 
     fig,axes = plt.subplots(3,1,sharex=True)
 
-    axes[0].plot((local_dset['timestamp']-t0)/1e6,local_dset['vx'])
-    axes[0].step((setpoint_dset['timestamp']-t0)/1e6,setpoint_dset['vx'], where='post')
+    axes[0].plot((local_dset['timestamp'])/1e6,local_dset['vx'])
+    axes[0].step((setpoint_dset['timestamp'])/1e6,setpoint_dset['vx'], where='post')
     axes[0].grid()
     axes[0].legend(['Estimated', 'Setpoint'])
     axes[0].set_ylabel('vx (m/s)')
 
-    axes[1].plot((local_dset['timestamp']-t0)/1e6,local_dset['vy'])
-    axes[1].step((setpoint_dset['timestamp']-t0)/1e6,setpoint_dset['vy'], where='post')
+    axes[1].plot((local_dset['timestamp'])/1e6,local_dset['vy'])
+    axes[1].step((setpoint_dset['timestamp'])/1e6,setpoint_dset['vy'], where='post')
     axes[1].grid()
     axes[1].set_ylabel('vy (m/s)')
 
-    axes[2].plot((local_dset['timestamp']-t0)/1e6,local_dset['vz'])
-    axes[2].step((setpoint_dset['timestamp']-t0)/1e6,setpoint_dset['vz'], where='post')
+    axes[2].plot((local_dset['timestamp'])/1e6,local_dset['vz'])
+    axes[2].step((setpoint_dset['timestamp'])/1e6,setpoint_dset['vz'], where='post')
     axes[2].grid()
     axes[2].set_xlabel('t (s)')
     axes[2].set_ylabel('vz (m/s)')
@@ -86,16 +86,16 @@ def plotAcceleration(dset_dict):
 
     fig,axes = plt.subplots(3,1,sharex=True)
 
-    axes[0].plot((sensor_dset['timestamp']-t0)/1e6,sensor_dset['accelerometer_m_s2[0]'])
+    axes[0].plot((sensor_dset['timestamp'])/1e6,sensor_dset['accelerometer_m_s2[0]'])
     axes[0].grid()
     axes[0].legend(['Sensored'])
     axes[0].set_ylabel('ax (m/s^2)')
 
-    axes[1].plot((sensor_dset['timestamp']-t0)/1e6,sensor_dset['accelerometer_m_s2[1]'])
+    axes[1].plot((sensor_dset['timestamp'])/1e6,sensor_dset['accelerometer_m_s2[1]'])
     axes[1].grid()
     axes[1].set_ylabel('ay (m/s^2)')
 
-    axes[2].plot((sensor_dset['timestamp']-t0)/1e6,sensor_dset['accelerometer_m_s2[2]'])
+    axes[2].plot((sensor_dset['timestamp'])/1e6,sensor_dset['accelerometer_m_s2[2]'])
     axes[2].grid()
     axes[2].set_xlabel('t (s)')
     axes[2].set_ylabel('ax (m/s^2)')
@@ -145,19 +145,19 @@ def plotAttitude(dset_dict):
     pitch_set = np.arcsin(2.0 * (q_0 * q_2 - q_3 * q_1))
     yaw_set = np.arctan2(2.0 * (q_0 * q_3 + q_1 * q_2), 1.0 - 2.0 * (q_2 * q_2 + q_3 * q_3))
 
-    axes[0].plot((attitude_dset['timestamp']-t0)/1e6,roll)
-    axes[0].plot((setpoint_dset['timestamp']-t0)/1e6,roll_set)
+    axes[0].plot((attitude_dset['timestamp'])/1e6,roll)
+    axes[0].plot((setpoint_dset['timestamp'])/1e6,roll_set)
     axes[0].grid()
     axes[0].legend(['Estimated', 'Setpoint'])
     axes[0].set_ylabel('roll (rad)')
 
-    axes[1].plot((attitude_dset['timestamp']-t0)/1e6,pitch)
-    axes[1].plot((setpoint_dset['timestamp']-t0)/1e6,pitch_set)
+    axes[1].plot((attitude_dset['timestamp'])/1e6,pitch)
+    axes[1].plot((setpoint_dset['timestamp'])/1e6,pitch_set)
     axes[1].grid()
     axes[1].set_ylabel('pitch (rad)')
 
-    axes[2].plot((attitude_dset['timestamp']-t0)/1e6,yaw)
-    axes[2].plot((setpoint_dset['timestamp']-t0)/1e6,yaw_set)
+    axes[2].plot((attitude_dset['timestamp'])/1e6,yaw)
+    axes[2].plot((setpoint_dset['timestamp'])/1e6,yaw_set)
     axes[2].grid()
     axes[2].set_xlabel('t (s)')
     axes[2].set_ylabel('yaw (rad)')
@@ -177,19 +177,19 @@ def plotAttitudeRates(dset_dict):
 
     fig,axes = plt.subplots(3,1,sharex=True)
 
-    axes[0].plot((rates_dset['timestamp']-t0)/1e6,rates_dset['rollspeed'])
-    axes[0].plot((setpoint_dset['timestamp'][idx]-t0)/1e6,setpoint_dset['roll'][idx])
+    axes[0].plot((rates_dset['timestamp'])/1e6,rates_dset['rollspeed'])
+    axes[0].plot((setpoint_dset['timestamp'][idx])/1e6,setpoint_dset['roll'][idx])
     axes[0].grid()
     axes[0].legend(['Estimated', 'Setpoint'])
     axes[0].set_ylabel('roll rates (rad/s)')
 
-    axes[1].plot((rates_dset['timestamp']-t0)/1e6,rates_dset['pitchspeed'])
-    axes[1].plot((setpoint_dset['timestamp'][idx]-t0)/1e6,setpoint_dset['pitch'][idx])
+    axes[1].plot((rates_dset['timestamp'])/1e6,rates_dset['pitchspeed'])
+    axes[1].plot((setpoint_dset['timestamp'][idx])/1e6,setpoint_dset['pitch'][idx])
     axes[1].grid()
     axes[1].set_ylabel('pitch rates (rad/s)')
 
-    axes[2].plot((rates_dset['timestamp']-t0)/1e6,rates_dset['yawspeed'])
-    axes[2].plot((setpoint_dset['timestamp'][idx]-t0)/1e6,setpoint_dset['yaw'][idx])
+    axes[2].plot((rates_dset['timestamp'])/1e6,rates_dset['yawspeed'])
+    axes[2].plot((setpoint_dset['timestamp'][idx])/1e6,setpoint_dset['yaw'][idx])
     axes[2].grid()
     axes[2].set_xlabel('t (s)')
     axes[2].set_ylabel('yaw rates (rad/s)')
@@ -205,9 +205,9 @@ def plotBatteryStatus(dset_dict):
     t0 = battery_set['timestamp'][0]
 
     fig,axes = plt.subplots(1,1)
-    axes.plot((battery_set['timestamp']-t0)/1e6,battery_set['current_a'])
-    axes.plot((battery_set['timestamp']-t0)/1e6,battery_set['voltage_v'])
-    axes.plot((battery_set['timestamp']-t0)/1e6,battery_set['remaining']*10)
+    axes.plot((battery_set['timestamp'])/1e6,battery_set['current_a'])
+    axes.plot((battery_set['timestamp'])/1e6,battery_set['voltage_v'])
+    axes.plot((battery_set['timestamp'])/1e6,battery_set['remaining']*10)
 
     axes.grid()
     axes.legend(['Current (A)', 'Voltage (V)', 'Battery Remaining [0=empty, 10=full]'])
@@ -224,10 +224,10 @@ def plotActuator(dset_dict):
     t0 = actuator_set['timestamp'][0]
 
     fig,axes = plt.subplots(1,1)
-    axes.plot((actuator_set['timestamp']-t0)/1e6,actuator_set['control[0]'])
-    axes.plot((actuator_set['timestamp']-t0)/1e6,actuator_set['control[1]'])
-    axes.plot((actuator_set['timestamp']-t0)/1e6,actuator_set['control[2]'])
-    axes.plot((actuator_set['timestamp']-t0)/1e6,actuator_set['control[3]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[0]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[1]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[2]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[3]'])
 
     axes.grid()
     axes.legend(['Roll', 'Pitch', 'Yaw', 'Thrust'])
