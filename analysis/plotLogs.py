@@ -12,16 +12,7 @@ Plot data from ulg log file
 Example Usage:
 python plotLogs.py ../logs/log_59_2019-4-13-10-49-40.ulg
 
-TODO: Implement plotAttitude (need to convert quaternions to euler angles) - done
-TODO: Check units of data in plotMotorRpm
-TODO: Add argumentparser
-    arguments:
-        filename: positional argument to replace using sys.argv
-        --full : plot all possible data (action='store_true', default=false).  when false,
-                 only generate some subset (TBD) of plots
-        --save : Save plots to specified location (default=false)
-
-TODO: Add other plots that we decide may be useful
+TODO: Implement plotMotorRpm once that data is in the logs
 """
 
 
@@ -129,8 +120,6 @@ def plotTrajectory(dset_dict):
 
 
 def plotAttitude(dset_dict):
-    # TODO: convert quaternion to euler angles
-    #   See example code at https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 
     attitude_dset = dset_dict['vehicle_attitude']
     setpoint_dset = dset_dict['vehicle_attitude_setpoint']
@@ -254,47 +243,27 @@ def plotActuator(dset_dict):
     return fig
 
 
-# def plotMotorRpm(dset_dict):
-#     # plot motor rpm
-#     # TODO: not sure if actuator outputs correspond directly to rpm
-#     #       Can't find anyt documentation on these datasets
-#     #       (Ju) : what i know is output is not rpm.
-
-#     dset = dset_dict['actuator_outputs']
-
-#     t0 = dset['timestamp'][0]
-#     tf = dset['timestamp'][-1]
-
-#     n_out = dset['noutputs']
-#     fig,axes = plt.subplots(1,1)
-
-#     for n in range(max(n_out)):
-#         axes.plot((dset['timestamp']-t0)/1e6,dset['output[{:}]'.format(n)])
-#     axes.grid()
-#     axes.legend(['Output {:}'.format(n) for n in range(max(n_out))])
-#     axes.set_xlabel('t (s)')
-#     axes.set_ylabel('rpm')
-
-#     axes.set_title('Motor RPM')
-
-
 def loadDataset(filename):
+    """
+    Load datasets into a nested dictionary format
+
+    NOTE: Currently we ignore duplicate datasets.  This seems to work
+    for the three test files we have as the second datasets are
+    always filled with 0s. This may not be true for all ulog files...
+    """
+
     ulog = pyulog.ULog(filename)
 
     # combine datasets into dictionary
     dataset_dict = {}
     for d in ulog.data_list:
-        # debug prints (useful for determining what data we have to plot)
-        # will be removed as the tool is finalized
-        print d.name
-        print d.data.keys()
-        print
         if d.name in dataset_dict.keys():
-            print 'ignoring duplicate dataset: {:}'.format(d.name)
+            print 'WARNING: ignoring duplicate dataset: {:}'.format(d.name)
             continue
         dataset_dict[d.name] = d.data
 
     return dataset_dict
+
 
 def parseArgs():
 
@@ -304,6 +273,7 @@ def parseArgs():
 
     args = parser.parse_args()
     return args
+
 
 def saveFigure(fig, log_file_name, plot_type):
 
@@ -334,7 +304,6 @@ def main():
     rates_fig = plotAttitudeRates(dataset_dict)
     batt_fig  = plotBatteryStatus(dataset_dict)
     act_fig   = plotActuator(dataset_dict)
-#     plotMotorRpm(dataset_dict)
 
     if args.save:
         saveFigure(pos_fig, filename, 'position')
