@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pyulog
 import sys
 
+from argparse import ArgumentParser
 
 """
 Plot data from ulg log file
@@ -50,6 +52,8 @@ def plotPosition(dset_dict):
 
     axes[0].set_title('Position')
 
+    return fig
+
 
 def plotVelocity(dset_dict):
     local_dset = dset_dict['vehicle_local_position']
@@ -78,6 +82,8 @@ def plotVelocity(dset_dict):
 
     axes[0].set_title('Velocity')
 
+    return fig
+
 
 def plotAcceleration(dset_dict):
     sensor_dset = dset_dict['sensor_combined']
@@ -102,6 +108,8 @@ def plotAcceleration(dset_dict):
 
     axes[0].set_title('Acceleration')
 
+    return fig
+
 
 def plotTrajectory(dset_dict):
 
@@ -116,6 +124,8 @@ def plotTrajectory(dset_dict):
     axes.set_xlabel('x (m)')
     axes.set_ylabel('y (m)')
     axes.set_title('Trajectory')
+
+    return fig
 
 
 def plotAttitude(dset_dict):
@@ -164,6 +174,8 @@ def plotAttitude(dset_dict):
 
     axes[0].set_title('Attitude')
 
+    return fig
+
 
 def plotAttitudeRates(dset_dict):
 
@@ -196,6 +208,8 @@ def plotAttitudeRates(dset_dict):
 
     axes[0].set_title('Attitude Rates')
 
+    return fig
+
 
 def plotBatteryStatus(dset_dict):
     # plot voltage and current
@@ -214,6 +228,8 @@ def plotBatteryStatus(dset_dict):
     axes.set_xlabel('t (s)')
 
     axes.set_title('Battery Status')
+
+    return fig
 
 
 def plotActuator(dset_dict):
@@ -234,6 +250,8 @@ def plotActuator(dset_dict):
     axes.set_xlabel('t (s)')
 
     axes.set_title('Actuator Status')
+
+    return fig
 
 
 # def plotMotorRpm(dset_dict):
@@ -278,25 +296,57 @@ def loadDataset(filename):
 
     return dataset_dict
 
+def parseArgs():
+
+    parser = ArgumentParser(description='Plot a given log file')
+    parser.add_argument('file',help="Logfile to plot")
+    parser.add_argument('--save','-s',action='store_true',help="Save plots.  Will save to ./plots/{filename}_{plot-type}.png")
+
+    args = parser.parse_args()
+    return args
+
+def saveFigure(fig, log_file_name, plot_type):
+
+    analysis_path = '/'.join(os.path.realpath(__file__).split('/')[0:-1])
+    plot_dir = analysis_path + '/plots/'
+    if not os.path.exists(plot_dir):
+        os.makedirs(plot_dir)
+
+    filename = (log_file_name.split('/')[-1]).split('.')[0] + '-' + plot_type + '.png'
+    filepath = plot_dir+filename
+    fig.savefig(filepath)
+
 
 def main():
 
+    args = parseArgs()
+
     # Load File
-    filename = sys.argv[1]
+    filename = args.file
     dataset_dict = loadDataset(filename)
 
     # Plot Stuff
-    plotPosition(dataset_dict)
-    plotVelocity(dataset_dict)
-    plotAcceleration(dataset_dict)
-    plotTrajectory(dataset_dict)
-    plotAttitude(dataset_dict)
-    plotAttitudeRates(dataset_dict)
-    plotBatteryStatus(dataset_dict)
-    plotActuator(dataset_dict)
+    pos_fig   = plotPosition(dataset_dict)
+    vel_fig   = plotVelocity(dataset_dict)
+    accel_fig = plotAcceleration(dataset_dict)
+    traj_fig  = plotTrajectory(dataset_dict)
+    att_fig   = plotAttitude(dataset_dict)
+    rates_fig = plotAttitudeRates(dataset_dict)
+    batt_fig  = plotBatteryStatus(dataset_dict)
+    act_fig   = plotActuator(dataset_dict)
 #     plotMotorRpm(dataset_dict)
 
-    plt.show()
+    if args.save:
+        saveFigure(pos_fig, filename, 'position')
+        saveFigure(vel_fig, filename, 'velocity')
+        saveFigure(accel_fig, filename, 'acceleration')
+        saveFigure(traj_fig, filename, 'trajectory')
+        saveFigure(att_fig, filename, 'attitude')
+        saveFigure(rates_fig, filename, 'attitude-rates')
+        saveFigure(batt_fig, filename, 'battery')
+        saveFigure(act_fig, filename, 'actuator')
+    else:
+        plt.show()
 
 
 if __name__ == '__main__':
