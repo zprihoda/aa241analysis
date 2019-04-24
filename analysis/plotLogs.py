@@ -257,9 +257,9 @@ def loadDataset(filename):
     # combine datasets into dictionary
     dataset_dict = {}
     for d in ulog.data_list:
-        if d.name in dataset_dict.keys():
-            print 'WARNING: ignoring duplicate dataset: {:}'.format(d.name)
-            continue
+#         if d.name in dataset_dict.keys():
+#             print 'WARNING: ignoring duplicate dataset: {:}'.format(d.name)
+#             continue
         dataset_dict[d.name] = d.data
 
     return dataset_dict
