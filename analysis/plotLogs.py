@@ -224,21 +224,21 @@ def plotBatteryStatus(dset_dict):
 def plotActuator(dset_dict):
     # plot actuator control
 
-    actuator_set = dset_dict['actuator_controls_0']
+    actuator_set = dset_dict['actuator_outputs']
 
     t0 = actuator_set['timestamp'][0]
 
     fig,axes = plt.subplots(1,1)
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[0]'])
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[1]'])
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[2]'])
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['control[3]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[0]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[1]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[2]'])
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[3]'])
 
     axes.grid()
-    axes.legend(['Roll', 'Pitch', 'Yaw', 'Thrust'])
+    axes.legend(['Top Right', 'Bottom Left', 'Top Left', 'Bottom Right'])
     axes.set_xlabel('t (s)')
 
-    axes.set_title('Actuator Status')
+    axes.set_title('Actuator Outputs')
 
     return fig
 
