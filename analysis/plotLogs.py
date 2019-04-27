@@ -273,7 +273,7 @@ def loadDataset(filename):
                 if std_new > std_old:       # compare variation of data
                     dataset_dict[d.name] = d.data   # replace old dataset
             else:
-                print 'WARNING: ignoring duplicate dataset: {:}'.format(d.name)
+                print('WARNING: ignoring duplicate dataset: {:}'.format(d.name))
             continue
 
         dataset_dict[d.name] = d.data
