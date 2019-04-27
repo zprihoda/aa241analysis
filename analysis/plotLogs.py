@@ -251,14 +251,31 @@ def loadDataset(filename):
     always filled with 0s. This may not be true for all ulog files...
     """
 
+    # use these keys to differentiate duplicate datasets
+    dup_dataset_key = {'actuator_outputs' : 'output[1]',
+                       'battery_status'   : 'current_a',
+                       'input_rc'         : 'values[0]'
+                        }
+
     ulog = pyulog.ULog(filename)
 
     # combine datasets into dictionary
     dataset_dict = {}
     for d in ulog.data_list:
-#         if d.name in dataset_dict.keys():
-#             print 'WARNING: ignoring duplicate dataset: {:}'.format(d.name)
-#             continue
+        if d.name in dataset_dict.keys():
+            if d.name in dup_dataset_key:
+                key = dup_dataset_key[d.name]
+                dset_old = dataset_dict[d.name]
+
+                std_old = np.std(dset_old[key])
+                std_new = np.std(d.data[key])
+
+                if std_new > std_old:       # compare variation of data
+                    dataset_dict[d.name] = d.data   # replace old dataset
+            else:
+                print 'WARNING: ignoring duplicate dataset: {:}'.format(d.name)
+            continue
+
         dataset_dict[d.name] = d.data
 
     return dataset_dict
