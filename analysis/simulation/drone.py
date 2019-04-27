@@ -46,6 +46,16 @@ class drone:
             self.beacon_history[index].append(position)
 
     def estimate(self):
+        def kalman_filter(post_mean, post_cov, y_k, r_k):
+            if post_mean.size == 1:
+                return y_k, r_k
+            else:
+                K = np.matmul(post_cov, np.linalg.inv(r_k + post_cov))
+                new_mean = post_mean + np.matmul(K, y_k - post_mean)
+                new_cov = np.matmul(np.matmul((np.identity(2) - K), post_cov), np.transpose(np.identity(2) - K)) + np.matmul(np.matmul(K, r_k), np.transpose(K))
+                new_cov = post_cov - np.matmul(K, post_cov)
+                return new_mean, new_cov
+
         # kalman_filter
         # Ex. average the noised positions
 
@@ -53,12 +63,18 @@ class drone:
             beacon_index = key
             beacon_positions = self.beacon_history[beacon_index]
 
-            estimated_position = [0, 0]
-            for noised_position in beacon_positions:
-                estimated_position[0] += noised_position[0]
-                estimated_position[1] += noised_position[1]
-            estimated_position = [x/len(beacon_positions) for x in estimated_position]
-
+            observation_times = len(beacon_positions)
+            post_mean = np.array([0])
+            post_cov = np.array([0])
+            
+            for i in range(observation_times):
+                noised_position = np.array(beacon_positions[i])
+                y_k = noised_position.reshape((2, 1))
+                sigma = 2 + self.z/50
+                r_k = np.identity(2) * (sigma) ** 2
+                post_mean, post_cov = kalman_filter(post_mean, post_cov, y_k, r_k)
+   
+            estimated_position = post_mean.tolist()
             self.estimated_beacon[beacon_index] = estimated_position
 
     def path_planner(self):
