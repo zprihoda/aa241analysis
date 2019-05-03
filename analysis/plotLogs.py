@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.signal as sps
 import os
 import pyulog
 import sys
@@ -87,19 +88,21 @@ def plotAcceleration(dset_dict):
 
     fig,axes = plt.subplots(3,1,sharex=True)
 
-    axes[0].plot((sensor_dset['timestamp'])/1e6,sensor_dset['accelerometer_m_s2[0]'])
+    ksize = 101      # medfilt kernel size (must be odd. for no filter use ksize=None)
+
+    axes[0].plot((sensor_dset['timestamp'])/1e6,sps.medfilt(sensor_dset['accelerometer_m_s2[0]'],kernel_size=ksize))
     axes[0].grid()
-    axes[0].legend(['Sensored'])
+    axes[0].legend(['Filtered Sensor'])
     axes[0].set_ylabel('ax (m/s^2)')
 
-    axes[1].plot((sensor_dset['timestamp'])/1e6,sensor_dset['accelerometer_m_s2[1]'])
+    axes[1].plot((sensor_dset['timestamp'])/1e6,sps.medfilt(sensor_dset['accelerometer_m_s2[1]'],kernel_size=ksize))
     axes[1].grid()
     axes[1].set_ylabel('ay (m/s^2)')
 
-    axes[2].plot((sensor_dset['timestamp'])/1e6,sensor_dset['accelerometer_m_s2[2]'])
+    axes[2].plot((sensor_dset['timestamp'])/1e6,sps.medfilt(sensor_dset['accelerometer_m_s2[2]'],kernel_size=ksize))
     axes[2].grid()
     axes[2].set_xlabel('t (s)')
-    axes[2].set_ylabel('ax (m/s^2)')
+    axes[2].set_ylabel('az (m/s^2)')
 
     axes[0].set_title('Acceleration')
 
@@ -233,10 +236,17 @@ def plotActuator(dset_dict):
     actuator_set = dset_dict['actuator_outputs']
 
     fig,axes = plt.subplots(1,1)
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[0]'])
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[1]'])
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[2]'])
-    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[3]'])
+
+    axes.plot((actuator_set['timestamp'])/1e6,sps.medfilt(actuator_set['output[0]'],kernel_size=15),'C0')
+    axes.plot((actuator_set['timestamp'])/1e6,sps.medfilt(actuator_set['output[1]'],kernel_size=15),'C1')
+    axes.plot((actuator_set['timestamp'])/1e6,sps.medfilt(actuator_set['output[2]'],kernel_size=15),'C2')
+    axes.plot((actuator_set['timestamp'])/1e6,sps.medfilt(actuator_set['output[3]'],kernel_size=15),'C3')
+
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[0]'],'C0',alpha=0.1)
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[1]'],'C1',alpha=0.1)
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[2]'],'C2',alpha=0.1)
+    axes.plot((actuator_set['timestamp'])/1e6,actuator_set['output[3]'],'C3',alpha=0.1)
+
 
     axes.grid()
     axes.legend(['Top Right', 'Bottom Left', 'Top Left', 'Bottom Right'])
