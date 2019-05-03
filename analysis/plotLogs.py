@@ -16,6 +16,10 @@ TODO: Implement plotMotorRpm once that data is in the logs
 """
 
 
+# set global legend font-size
+plt.rc('legend',**{'fontsize':8})
+
+
 def plotPosition(dset_dict):
     local_dset = dset_dict['vehicle_local_position']
 
@@ -212,9 +216,10 @@ def plotBatteryStatus(dset_dict):
     axes.plot((battery_set['timestamp'])/1e6,battery_set['current_a'])
     axes.plot((battery_set['timestamp'])/1e6,battery_set['voltage_v'])
     axes.plot((battery_set['timestamp'])/1e6,battery_set['remaining']*10)
+    axes.plot((battery_set['timestamp'])/1e6,battery_set['discharged_mah']/100)
 
     axes.grid()
-    axes.legend(['Current (A)', 'Voltage (V)', 'Battery Remaining [0=empty, 10=full]'])
+    axes.legend(['Current (A)', 'Voltage (V)', 'Battery [0=empty, 10=full]','Discharged [mAh/100]'])
     axes.set_xlabel('t (s)')
 
     axes.set_title('Battery Status')
@@ -243,13 +248,7 @@ def plotActuator(dset_dict):
 
 
 def loadDataset(filename):
-    """
-    Load datasets into a nested dictionary format
-
-    NOTE: Currently we ignore duplicate datasets.  This seems to work
-    for the three test files we have as the second datasets are
-    always filled with 0s. This may not be true for all ulog files...
-    """
+    """Load datasets into a nested dictionary format"""
 
     # use these keys to differentiate duplicate datasets
     dup_dataset_key = {'actuator_outputs' : 'output[1]',
